@@ -5,9 +5,6 @@ These libraries are:
 Screenfull.js - fullscreen handling library - MIT licence
 Waud.js - WebAudio based sound frontend - MIT licence
 Matter.js - JavaScript 2D Physics engine - MIT licence
-Hammer.js - Gesture and touch input library (v2.0.8) - MIT licence
-Hammer-time.js - Remove 300ms delay in Hammer (v1.1.0) - MIT licence
-
 
 ==============================================================================
 
