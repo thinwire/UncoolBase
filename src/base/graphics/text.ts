@@ -83,7 +83,7 @@ namespace base {
                     r.dh = g.h;
                     
                     xx += g.advance + k;
-                } else {
+                } else if(g) {
                     xx += g.advance + k;
                 }
             }

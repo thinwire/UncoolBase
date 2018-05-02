@@ -57,4 +57,42 @@ namespace base {
     export function toDegree(rad: number): number {
         return rad * 57.2957795130832892;
     }
+
+    function lineDot(ax: number, ay: number, bx: number, by: number, cx: number, cy: number): number {
+        var abx = bx - ax;
+        var aby = by - ay;
+        var bcx = cx - bx;
+        var bcy = cy - by;
+        return abx * bcx + aby * bcy;
+    }
+
+    function lineCross(ax: number, ay: number, bx: number, by: number, cx: number, cy: number): number {
+        var abx = bx - ax;
+        var aby = by - ay;
+        var acx = cx - ax;
+        var acy = cy - ay;
+        return abx * acy - aby * acx;
+    }
+
+    function lineLength(ax: number, ay: number, bx: number, by: number): number {
+        var dx = bx - ax;
+        var dy = by - ay;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    export function distanceToLineSegment(p: Vec2, lineP0: Vec2, lineP1: Vec2): number {
+        return distanceToLineSegmentXY(p.x,p.y,lineP0.x,lineP0.y,lineP1.x,lineP1.y);
+    }
+
+    export function distanceToLineSegmentXY(cx: number, cy: number, ax: number, ay: number, bx: number, by: number): number {
+
+        var dist = lineCross(ax,ay,bx,by,cx,cy) / lineLength(ax,ay,bx,by);
+        var d1 = lineDot(ax,ay,bx,by,cx,cy);
+        var d2 = lineDot(bx,by,ax,ay,cx,cy);
+
+        if(d1 > 0) return lineLength(bx,by,cx,cy);
+        if(d2 > 0) return lineLength(ax,ay,cx,cy);
+        return Math.abs(dist);
+
+    }
 }

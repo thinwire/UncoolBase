@@ -121,6 +121,7 @@ namespace base {
         private _looping: boolean;
         private _animSpeed: number;
         private _elapsed: number;
+        private _reverse: boolean;
 
         private _oncomplete = new SafeList<Function>();
 
@@ -131,6 +132,7 @@ namespace base {
             this._looping = false;
             this._animSpeed = 16;
             this._elapsed = 0;
+            this._reverse = false;
             this.setFrame(0);
         }
 
@@ -156,9 +158,9 @@ namespace base {
 
         public setFrame(idx: number): Animator {
             if(this._looping) {
-                this._currentFrame = idx % this._animation.getFrameCount();
+                this._currentFrame = wrap(idx,0,this._animation.getFrameCount()) | 0;
             } else {
-                this._currentFrame = clamp(idx,0,this._animation.getFrameCount() - 1);
+                this._currentFrame = clamp(idx,0,this._animation.getFrameCount() - 1) | 0;
             }
 
             var f = this._animation.getFrame(this._currentFrame);
@@ -179,6 +181,15 @@ namespace base {
 
         public isLooping(): boolean {
             return this._looping;
+        }
+
+        public setReverse(b: boolean): Animator {
+            this._reverse = b;
+            return this;
+        }
+
+        public isReverse(): boolean {
+            return this._reverse;
         }
 
         public setAnimationSpeed(fps: number): Animator {
@@ -221,7 +232,11 @@ namespace base {
             var ftime = 1.0 / this._animSpeed;
             var e = this._elapsed + delta;
             while(e >= ftime) {
-                this.setFrame(this._currentFrame + 1);
+                if(this._looping && this._reverse) {
+                    this.setFrame(this._currentFrame - 1);
+                } else {
+                    this.setFrame(this._currentFrame + 1);
+                }
                 e -= ftime;
             }
             this._elapsed = e;

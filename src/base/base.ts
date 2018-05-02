@@ -24,6 +24,7 @@
 /// <reference path="util/pool.ts" />
 /// <reference path="util/timer.ts" />
 /// <reference path="util/tween.ts" />
+/// <reference path="util/randomness.ts" />
 /// <reference path="sound/mixer.ts" />
 /// <reference path="sound/sound.ts" />
 /// <reference path="sound/music.ts" />
@@ -49,6 +50,12 @@ namespace base {
         RUN
     }
 
+    class FixedLoop {
+        public interval: number = 0;
+        public lastUpdate: number = 0;
+        public callback: Function = null;
+    }
+
     //
     // Init system objects
     //
@@ -57,19 +64,20 @@ namespace base {
     var canvas: HTMLCanvasElement = document.createElement('canvas');
     var status: Status = Status.LOAD;
 
-    var loader    = new Loader();
-    var logbuffer = new Ringbuffer(16);
+    var loader     = new Loader();
+    var logbuffer  = new Ringbuffer(16);
 
-    var loops     = new SafeList<Function>();
-    var timers    = new SafeList<Timer>();
-    var tweens    = new SafeList<Tween>();
-    var animators = new SafeList<Animator>();
+    var loops      = new SafeList<Function>();
+    var loopsFixed = new SafeList<FixedLoop>();
+    var timers     = new SafeList<Timer>();
+    var tweens     = new SafeList<Tween>();
+    var animators  = new SafeList<Animator>();
 
-    var screen    = new Surface(canvas);
-    var mixer     = new Mixer();
-    var keyboard  = new Keyboard();
-    var mouse     = new Mouse();
-    var touch     = new Touch();
+    var screen     = new Surface(canvas);
+    var mixer      = new Mixer();
+    var keyboard   = new Keyboard();
+    var mouse      = new Mouse();
+    var touch      = new Touch();
 
     var time_current: number = 0;
     var time_last: number = 0;
@@ -271,6 +279,22 @@ namespace base {
         time_delta = time_delta_millis * 0.001;
     }
 
+    function updateFixedLoops(): void {
+        var tm = time_current;
+        loopsFixed.forEach((item) => {
+            // Allow a maximum of 25 updates skipped - if so, then we just update once.
+            if(tm - item.lastUpdate > item.interval * 25) {
+                item.lastUpdate = tm;
+                item.callback(item.interval * 0.001);
+            } else {
+                while(tm - item.lastUpdate > item.interval) {
+                    item.callback(item.interval * 0.001);
+                    item.lastUpdate += item.interval;
+                }
+            }
+        });
+    }
+
     function mainLoop(time: number): void {
         updateTime(time);
 
@@ -281,6 +305,8 @@ namespace base {
         timers.forEach(t => t.update(time_delta_millis));
         tweens.forEach(t => t.update(time_delta_millis));
         animators.forEach(a => a.update(time_delta));
+
+        updateFixedLoops();
         loops.forEach(loop => loop());
 
         mixer.update();
@@ -437,8 +463,24 @@ namespace base {
         loops.add(loop);
     }
 
+    export function addLoopFixed(loop: Function, fps: number): void {
+        var l = new FixedLoop();
+        l.callback = loop;
+        l.interval = 1000.0 / fps;  // interval time is in milliseconds
+        l.lastUpdate = time_current;
+        loopsFixed.add(l)
+    }
+
     export function removeLoop(loop: Function): void {
         loops.remove(loop);
+    }
+
+    export function removeLoopFixed(loop: Function): void {
+        loopsFixed.forEach((item) => {
+            if(item.callback == loop) {
+                loopsFixed.remove(item);
+            }
+        });
     }
 
     export function addTimer(timer: Timer): void {

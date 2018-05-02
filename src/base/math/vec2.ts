@@ -111,5 +111,9 @@ namespace base {
             this.y *= y;
             return this;
         }
+
+        public clone(): Vec2 {
+            return new Vec2(this.x,this.y);
+        }
     }
 }

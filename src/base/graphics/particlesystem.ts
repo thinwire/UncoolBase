@@ -59,7 +59,7 @@ namespace base {
         }
 
         public setParticleScale(initial: number, grow_min: number, grow_max: number): ParticleEmitter {
-            this._params.scale_iniital = initial;
+            this._params.scale_initial = initial;
             this._params.scale_delta_min = grow_min;
             this._params.scale_delta_max = grow_max;
             return this;
@@ -130,7 +130,7 @@ namespace base {
         public speed_max: number = 250; // pixels per second
         public life_min: number = 1.0; // time in seconds min
         public life_max: number = 1.5; // time in seconds max
-        public scale_iniital: number = 1.0;
+        public scale_initial: number = 1.0;
         public scale_delta_min: number = -0.5; // scaling change per second min
         public scale_delta_max: number =  0.5; // scaling change per second max
     }
@@ -191,7 +191,7 @@ namespace base {
                 angle = toRadian(angle);
                 p.x = this._tpos.x;
                 p.y = this._tpos.y;
-                p.s = params.scale_iniital;
+                p.s = params.scale_initial;
                 p.a = 1;
                 p.xadd = Math.cos(angle) * speed;
                 p.yadd = Math.sin(angle) * speed;
