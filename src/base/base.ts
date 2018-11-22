@@ -238,7 +238,7 @@ namespace base {
             cancel(e);
         };
 
-        window.onmousewheel = (e) => {
+        window.onmousewheel = (e: any) => {
             updateMouseXY(e);
             mouse.buttonDown(e.wheelDelta > 0 ? MouseButton.WHEEL_UP : MouseButton.WHEEL_DOWN);
             cancel(e);
@@ -360,7 +360,7 @@ namespace base {
 
     function requestMouseCaptureActual(): boolean {
         triggerMouseCapture = false;
-        canvas.requestPointerLock();
+        (<any>canvas).requestPointerLock();
         return true;
     }
 
@@ -513,7 +513,7 @@ namespace base {
     
     export function exitMouseCaputre(): void {
         try {
-            document.exitPointerLock();
+            (<any>document).exitPointerLock();
         } catch(ignore) {
             console.log("Cannot exit pointer lock");
         }

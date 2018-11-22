@@ -99,7 +99,7 @@ namespace base {
             for(var i = 0; i < num; ++i) {
                 this.addFrame(x,y,frameW,frameH);
                 x += frameW;
-                if(x > imageW) {
+                if(x >= imageW) {
                     x -= imageW;
                     y += frameH;
                 }

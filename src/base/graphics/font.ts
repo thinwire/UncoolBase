@@ -150,7 +150,7 @@ namespace base {
 
         public initFromXML(xml: XMLDocument): Font {
 
-            var c = xml.firstChild.firstChild;
+            var c = (<any>xml.firstChild.firstChild);
             while(c != null) {
 
                 if(c.nodeName === 'common') {

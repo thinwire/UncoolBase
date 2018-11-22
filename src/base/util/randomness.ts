@@ -19,4 +19,8 @@ namespace base {
     export function rotate(array: any[]): void {
         array.push(array.shift());
     }
+
+    export function rand(min: number, max: number): number {
+        return min + (Math.random() * (max - min));
+    }
 }
