@@ -1,6 +1,8 @@
 # The Uncool Base
 ## HTML5 2D game development framework
-### by The Uncool Bens
+
+# NOTICE: A new version is incoming; this code base works, but is outdated. New version supports WebGL and is built onto a new architecture. New version will be released when it is declared stable in internal review.
+
 
 ### TL;DR: what you need
 
